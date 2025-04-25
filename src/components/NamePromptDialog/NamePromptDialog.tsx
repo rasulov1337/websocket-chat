@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import { DialogActions, DialogContent, TextField } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { styled } from "@mui/material/styles";
+import { useState } from "react";
 
 const StyledDialog = styled(MUIDialog)(({ theme }) => ({
     ".MuiDialog-paper": {
@@ -25,10 +26,14 @@ const StyledDialog = styled(MUIDialog)(({ theme }) => ({
 }));
 
 export default function NamePromptDialog() {
-    const handleClose = () => {};
+    const [open, setOpen] = useState(true);
+
+    const handleLogin = () => {
+        setOpen(false);
+    };
 
     return (
-        <StyledDialog onClose={handleClose} open={true}>
+        <StyledDialog open={open}>
             <DialogContent>
                 <Typography gutterBottom variant="h2" component="h2">
                     Добро пожаловать в мессенджер ROCKETLAB
@@ -47,6 +52,7 @@ export default function NamePromptDialog() {
                     variant="contained"
                     endIcon={<CheckIcon />}
                     sx={{ width: "100%" }}
+                    onClick={handleLogin}
                 >
                     Войти
                 </Button>
