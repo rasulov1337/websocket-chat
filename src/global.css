@@ -1,5 +1,3 @@
-@use "variables" as v;
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -23,7 +21,6 @@ html {
 
 body {
     flex: 1 0 auto;
-    background: v.$background-color;
     display: flex;
     flex-direction: column;
 }
