@@ -2,17 +2,13 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
     typography: {
+        allVariants: {
+            color: "#fff",
+        },
         button: {
             fontWeight: 700, // Делаем все кнопки жирными
         },
-        body1: {
-            color: "#fff",
-        },
-        body2: {
-            color: "#fff",
-        },
         h2: {
-            color: "#fff",
             fontSize: "32px",
         },
     },
@@ -22,7 +18,7 @@ const theme = createTheme({
             contrastText: "#fff",
         },
         secondary: {
-            main: "#03a9f4", // Custom secondary color (Light Blue)
+            main: "#ffffff9c",
             contrastText: "#fff",
         },
         background: {
