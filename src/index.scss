@@ -10,8 +10,20 @@
     margin: 0;
     padding: 0;
     font-family: "Inter", sans-serif;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+html {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 body {
+    flex: 1 0 auto;
     background: v.$background-color;
+    display: flex;
+    flex-direction: column;
 }
