@@ -1,34 +1,49 @@
-import TextField from "@mui/material/TextField/TextField";
-import "./Chat.scss";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 
 export default function Chat() {
-  return (
-    <div className="chat">
-      <div className="controls">
-        <TextField
-          className="controls__text-field"
-          id="outlined-basic"
-          label="Сообщение"
-          variant="outlined"
-        />
-        <Button
-          className="controls__button"
-          variant="contained"
-          startIcon=<UploadFileIcon />
+    return (
+        <Box
+            sx={{
+                width: "100%",
+                height: "60vh",
+                border: "1px solid",
+                borderColor: "primary.main",
+            }}
+            className="chat"
         >
-          Прикрепить
-        </Button>
-        <Button
-          className="controls__button"
-          variant="contained"
-          endIcon=<SendIcon />
-        >
-          отправить
-        </Button>
-      </div>
-    </div>
-  );
+            <Box
+                className="controls"
+                sx={{
+                    display: "flex",
+                    gap: "10px",
+                    justifyContent: "space-between",
+                    padding: "0 30px",
+                    width: "100%",
+                    height: "54px",
+                    position: "fixed",
+                    bottom: "20px",
+                    fontWeight: "800",
+                }}
+            >
+                <Button
+                    className="controls__button"
+                    variant="contained"
+                    startIcon=<UploadFileIcon />
+                    sx={{ flex: "1 1 auto" }}
+                >
+                    Прикрепить файл
+                </Button>
+                <Button
+                    className="controls__button"
+                    variant="contained"
+                    endIcon=<SendIcon />
+                    sx={{ flex: "0 1 auto" }}
+                >
+                    отправить
+                </Button>
+            </Box>
+        </Box>
+    );
 }
