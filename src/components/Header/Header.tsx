@@ -1,17 +1,30 @@
-import { Avatar, Button } from "@mui/material";
-import "./Header.scss";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { Avatar, Button } from '@mui/material';
+import './Header.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../Types';
+import { setUsername } from '../../slices/Slice';
 
 export default function Header() {
+    const username = useSelector((state: RootState) => state.slice.username);
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        dispatch(setUsername(''));
+    };
+
     return (
         <header className="header">
             <img width="130px" src="/logo.png" />
             <div className="header__right">
                 <div className="header__user-data">
                     <Avatar />
-                    <span className="header__username">@USER</span>
+                    <span className="header__username">
+                        {username && `@${username}`}
+                    </span>
                 </div>
-                <Button variant="outlined">ВЫХОД</Button>
+                <Button variant="outlined" onClick={handleLogout}>
+                    ВЫХОД
+                </Button>
             </div>
         </header>
     );
