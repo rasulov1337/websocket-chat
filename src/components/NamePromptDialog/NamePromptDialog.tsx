@@ -1,32 +1,42 @@
-import Button from "@mui/material/Button";
-import MUIDialog from "@mui/material/Dialog";
-import Typography from "@mui/material/Typography";
-import { DialogActions, DialogContent, TextField } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import { styled } from "@mui/material/styles";
-import { useState } from "react";
+import Button from '@mui/material/Button';
+import MUIDialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
+import { DialogActions, DialogContent, TextField } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+import { styled } from '@mui/material/styles';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../Types';
+import { setUsername } from '../../slices/Slice';
 
 const StyledDialog = styled(MUIDialog)(({ theme }) => ({
-    ".MuiDialog-paper": {
-        borderRadius: "0",
-        padding: "5px 10px",
-        border: "1px solid",
+    '.MuiDialog-paper': {
+        borderRadius: '0',
+        padding: '5px 10px',
+        border: '1px solid',
         borderColor: theme.palette.primary.main,
     },
-    "& .MuiDialogContent-root": {
+    '& .MuiDialogContent-root': {
         padding: theme.spacing(4),
         background: theme.palette.secondary,
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
     },
-    "& .MuiDialogActions-root": {
+    '& .MuiDialogActions-root': {
         padding: theme.spacing(3),
     },
 }));
 
 export default function NamePromptDialog() {
     const [open, setOpen] = useState(true);
+
+    const username = useSelector((state: RootState) => state.slice.username);
+    const dispatch = useDispatch();
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch(setUsername(e.target.value));
+    };
 
     const handleLogin = () => {
         setOpen(false);
@@ -45,13 +55,15 @@ export default function NamePromptDialog() {
                     id="outlined-basic"
                     label="Отображаемое имя"
                     variant="outlined"
+                    onChange={handleNameChange}
+                    value={username}
                 />
             </DialogContent>
             <DialogActions>
                 <Button
                     variant="contained"
                     endIcon={<CheckIcon />}
-                    sx={{ width: "100%" }}
+                    sx={{ width: '100%' }}
                     onClick={handleLogin}
                 >
                     Войти

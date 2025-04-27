@@ -59,6 +59,13 @@ const theme = createTheme({
                 },
             },
         },
+        MuiAlert: {
+            styleOverrides: {
+                root: {
+                    "& .MuiAlert-filled": {},
+                },
+            },
+        },
     },
 });
 
