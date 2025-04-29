@@ -5,13 +5,20 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export interface MessageProps {
     author: string;
-    file: File;
+    file?: File;
     error?: boolean;
-    time: string;
+    timestamp: string;
 }
 
-export default function Message({ author, file, error, time }: MessageProps) {
+export default function Message({
+    author,
+    file,
+    error,
+    timestamp,
+}: MessageProps) {
     const handleDownloadFile = () => {
+        if (!file) return;
+
         const blob = new Blob([file], { type: 'text/plain' });
 
         // Create a URL for the Blob
@@ -52,7 +59,7 @@ export default function Message({ author, file, error, time }: MessageProps) {
                 fontSize="12px"
                 color="secondary.main"
             >
-                {time}
+                {timestamp}
             </Typography>
         </Box>
     );

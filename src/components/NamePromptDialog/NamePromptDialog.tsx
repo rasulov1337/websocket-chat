@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../Types';
-import { setUsername } from '../../slices/Slice';
+import { setLoggedIn, setUsername } from '../../slices/Slice';
 
 const StyledDialog = styled(MUIDialog)(({ theme }) => ({
     '.MuiDialog-paper': {
@@ -35,10 +35,11 @@ export default function NamePromptDialog() {
     const dispatch = useDispatch();
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(setUsername(e.target.value));
+        dispatch(setUsername(e.target.value.trim()));
     };
 
     const handleLogin = () => {
+        dispatch(setLoggedIn(true));
         setOpen(false);
     };
 
