@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { MessageProps } from "../components/Message/Message";
 
 const slice = createSlice({
-    name: "transfersSlice",
+    name: "globalSlice",
     initialState: {
         username: "",
         loggedIn: false,

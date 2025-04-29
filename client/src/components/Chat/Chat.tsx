@@ -7,6 +7,7 @@ import { RootState } from "../../Types";
 import { ChangeEvent, useEffect, useState } from "react";
 import { setMessages } from "../../slices/Slice";
 import VisuallyHiddenInput from "../VisuallyHiddenInput/VisuallyHiddenInput";
+import { alertActions } from "../../slices/Alert";
 
 export default function Chat() {
     const username = useSelector((state: RootState) => state.slice.username);
@@ -153,7 +154,14 @@ export default function Chat() {
 
     const handleSend = async () => {
         if (!file) {
-            alert("Add no file check!");
+            dispatch(
+                alertActions.setAlert({
+                    title: "Не удалось отправить сообщение",
+                    text: "Сообщение пустое",
+                }),
+            );
+            dispatch(alertActions.show());
+
             return;
         }
 
