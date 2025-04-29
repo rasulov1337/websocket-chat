@@ -20,7 +20,11 @@ export default function Chat() {
 
     useEffect(() => {
         console.log("del me: im called");
-        if (!loggedIn) return;
+        if (!loggedIn) {
+            console.log("Closing connection...");
+            ws?.close();
+            return;
+        }
 
         setWS(new WebSocket("ws://localhost:8005"));
         console.log("change ws variable", ws);
