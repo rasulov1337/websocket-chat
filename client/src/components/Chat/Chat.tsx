@@ -1,122 +1,143 @@
-import { Box, Button, Typography } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import Message, { MessageProps } from '../Message/Message';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../Types';
-import { ChangeEvent, useEffect, useState } from 'react';
-import VisuallyHiddenInput from '../VisuallyHiddenInput/VisuallyHiddenInput';
-import ws from '../../socket';
+import { Box, Button, Typography } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import Message, { MessageProps } from "../Message/Message";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Types";
+import { ChangeEvent, useEffect, useState } from "react";
+import VisuallyHiddenInput from "../VisuallyHiddenInput/VisuallyHiddenInput";
 
 export default function Chat() {
     const username = useSelector((state: RootState) => state.slice.username);
     const loggedIn = useSelector((state: RootState) => state.slice.loggedIn);
     const [file, setFile] = useState<null | File>(null);
     const [messages, setMessages] = useState<MessageProps[]>([]);
+    const [ws, setWS] = useState<null | WebSocket>(null);
 
     useEffect(() => {
-        return () => {
-            // on unmount
-        };
-    }, []);
+        console.log("del me: im called");
+        if (!loggedIn) return;
 
-    if (loggedIn) {
+        setWS(new WebSocket("ws://localhost:8005"));
+        console.log("change ws variable", ws);
+        if (!ws) return;
+        console.log("ws was initialized!");
+    }, [loggedIn]);
+
+    useEffect(() => {
+        console.log("del me: im called");
+
+        if (!ws) return;
+
         ws.onopen = () => {
-            console.log('Соединение открыто');
+            console.log("Соединение открыто");
             ws.send(
                 JSON.stringify({
-                    type: 'init',
+                    type: "init",
                     username,
-                })
+                }),
             );
         };
 
         ws.onmessage = (event) => {
-            const data = event.data;
+            try {
+                const data = event.data;
 
-            // Если это JSON (текстовое сообщение)
-            if (typeof data === 'string') {
-                try {
+                // Только строка — это JSON
+                if (typeof data === "string") {
                     const message = JSON.parse(data);
 
-                    if (message.type === 'receive') {
-                        const {
-                            username: author,
-                            timestamp,
-                            message: text,
-                            error_flag,
-                        } = message;
+                    switch (message.type) {
+                        case "receive": {
+                            const {
+                                username: author,
+                                timestamp,
+                                message: text,
+                                error_flag,
+                            } = message;
 
-                        if (error_flag) {
-                            setMessages([
-                                ...messages,
-                                {
-                                    author,
-                                    timestamp: new Date(
-                                        timestamp
-                                    ).toLocaleTimeString(),
-                                    error: true,
-                                },
-                            ]);
-                        } else {
+                            if (error_flag) {
+                                setMessages((prev) => [
+                                    ...prev,
+                                    {
+                                        author,
+                                        timestamp: new Date(
+                                            timestamp,
+                                        ).toLocaleTimeString(),
+                                        error: true,
+                                    },
+                                ]);
+                            } else {
+                                setMessages((prev) => [
+                                    ...prev,
+                                    {
+                                        author,
+                                        timestamp: new Date(
+                                            timestamp,
+                                        ).toLocaleTimeString(),
+                                        text,
+                                    },
+                                ]);
+                            }
+                            break;
+                        }
+
+                        case "file": {
+                            // Декодируем Base64 в Blob
+                            const byteString = atob(message.data);
+                            const arrayBuffer = new ArrayBuffer(
+                                byteString.length,
+                            );
+                            const intArray = new Uint8Array(arrayBuffer);
+
+                            for (let i = 0; i < byteString.length; i++) {
+                                intArray[i] = byteString.charCodeAt(i);
+                            }
+
+                            const blob = new Blob([intArray], {
+                                type: message.mimeType,
+                            });
+                            const file = new File([blob], message.filename, {
+                                type: message.mimeType,
+                                lastModified: message.timestamp,
+                            });
+
                             setMessages((prev) => [
                                 ...prev,
                                 {
-                                    author,
+                                    author: message.username,
                                     timestamp: new Date(
-                                        timestamp
+                                        message.timestamp,
                                     ).toLocaleTimeString(),
-                                    text,
+                                    file,
                                 },
                             ]);
-                        }
-                    }
-                } catch (err) {
-                    console.error('Не удалось распарсить JSON:', err);
-                }
 
-                return;
+                            break;
+                        }
+
+                        default:
+                            console.warn(
+                                "Неизвестный тип сообщения:",
+                                message.type,
+                            );
+                    }
+                } else {
+                    console.warn("Получены не текстовые данные", data);
+                }
+            } catch (err) {
+                console.error("Ошибка при обработке сообщения:", err);
             }
         };
 
-        // Если это бинарное сообщение (file)
-        if (data instanceof ArrayBuffer) {
-            const buffer = new Uint8Array(data);
+        ws.onclose = () => {
+            console.log("Соединение закрыто");
+        };
 
-            // Читаем длину метаданных
-            const metaLength = new DataView(buffer.buffer).getUint32(0);
-
-            // Извлекаем метаданные и файл
-            const metaBuffer = buffer.slice(4, 4 + metaLength);
-            const fileBuffer = buffer.slice(4 + metaLength);
-
-            const metaString = new TextDecoder().decode(metaBuffer);
-            const meta = JSON.parse(metaString);
-
-            const fileBlob = new Blob([fileBuffer]);
-
-            const file = new File([fileBlob], meta.filename, {
-                type: meta.mimeType,
-            });
-
-            setMessages((prev) => [
-                ...prev,
-                {
-                    author: meta.username,
-                    timestamp: new Date(meta.timestamp).toLocaleTimeString(),
-                    file,
-                },
-            ]);
-        }
-    }
-
-    ws.onclose = () => {
-        console.log('Соединение закрыто');
-    };
-
-    ws.onerror = (error) => {
-        console.error('Ошибка WebSocket', error);
-    };
+        ws.onerror = (error) => {
+            console.error("Ошибка WebSocket", error);
+        };
+    }, [ws]);
 
     const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
         const file = (event.target as HTMLInputElement).files![0];
@@ -125,17 +146,17 @@ export default function Chat() {
 
     const handleSend = async () => {
         if (!file) {
-            alert('Add no file check!');
+            alert("Add no file check!");
             return;
         }
 
         const reader = new FileReader();
 
         reader.onload = () => {
-            const base64Data = (reader.result as string).split(',')[1]; // Только данные, без "data:..." префикса
+            const base64Data = (reader.result as string).split(",")[1]; // Только данные, без "data:..." префикса
 
             const payload = {
-                type: 'send-binary',
+                type: "file",
                 username: username,
                 timestamp: Date.now(),
                 filename: file.name,
@@ -164,35 +185,35 @@ export default function Chat() {
     return (
         <Box
             sx={{
-                width: '100%',
-                height: '100%',
-                border: '1px solid',
-                borderColor: 'primary.main',
+                width: "100%",
+                height: "100%",
+                border: "1px solid",
+                borderColor: "primary.main",
             }}
             className="chat"
         >
             <Box padding="20px 50px">
-                <Typography sx={{ textAlign: 'center' }} color="secondary.main">
+                <Typography sx={{ textAlign: "center" }} color="secondary.main">
                     8 марта
                 </Typography>
                 <Box display="flex" flexDirection="column" gap="25px">
-                    {messages.map((msg) => (
-                        <Message {...msg} />
+                    {messages.map((msg, index) => (
+                        <Message key={index} {...msg} />
                     ))}
                 </Box>
             </Box>
             <Box
                 className="controls"
                 sx={{
-                    display: 'flex',
-                    gap: '10px',
-                    justifyContent: 'space-between',
-                    padding: '0 30px',
-                    width: '100%',
-                    height: '54px',
-                    position: 'fixed',
-                    bottom: '20px',
-                    fontWeight: '800',
+                    display: "flex",
+                    gap: "10px",
+                    justifyContent: "space-between",
+                    padding: "0 30px",
+                    width: "100%",
+                    height: "54px",
+                    position: "fixed",
+                    bottom: "20px",
+                    fontWeight: "800",
                 }}
             >
                 <Button
@@ -200,10 +221,10 @@ export default function Chat() {
                     variant="contained"
                     role={undefined}
                     component="label"
-                    sx={{ flex: '1 1 auto' }}
+                    sx={{ flex: "1 1 auto" }}
                     startIcon=<UploadFileIcon />
                 >
-                    {file ? file.name : 'Прикрепить файл'}
+                    {file ? file.name : "Прикрепить файл"}
                     <VisuallyHiddenInput
                         type="file"
                         onChange={handleFileUpload}
@@ -214,7 +235,7 @@ export default function Chat() {
                     className="controls__button"
                     variant="contained"
                     endIcon=<SendIcon />
-                    sx={{ flex: '0 1 auto' }}
+                    sx={{ flex: "0 1 auto" }}
                     onClick={handleSend}
                 >
                     отправить
