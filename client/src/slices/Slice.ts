@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { MessageProps } from "../components/Message/Message";
 
 const slice = createSlice({
     name: "transfersSlice",
@@ -6,6 +7,7 @@ const slice = createSlice({
         username: "",
         loggedIn: false,
         dialogOpen: true,
+        messages: [] as MessageProps[],
     },
     // Редьюсеры в слайсах мутируют состояние и ничего не возвращают наружу
     reducers: {
@@ -20,10 +22,14 @@ const slice = createSlice({
             state.loggedIn = false;
             state.username = "";
             state.dialogOpen = true;
+            state.messages = [];
+        },
+        setMessages: (state, { payload }) => {
+            state.messages = payload;
         },
     },
 });
 
-export const { setUsername, login, logout } = slice.actions;
+export const { setUsername, login, logout, setMessages } = slice.actions;
 
 export default slice.reducer;

@@ -2,17 +2,21 @@ import { Box, Button, Typography } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import Message, { MessageProps } from "../Message/Message";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Types";
 import { ChangeEvent, useEffect, useState } from "react";
+import { setMessages } from "../../slices/Slice";
 import VisuallyHiddenInput from "../VisuallyHiddenInput/VisuallyHiddenInput";
 
 export default function Chat() {
     const username = useSelector((state: RootState) => state.slice.username);
     const loggedIn = useSelector((state: RootState) => state.slice.loggedIn);
+    const messages = useSelector((state: RootState) => state.slice.messages);
+
     const [file, setFile] = useState<null | File>(null);
-    const [messages, setMessages] = useState<MessageProps[]>([]);
     const [ws, setWS] = useState<null | WebSocket>(null);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         console.log("del me: im called");
@@ -57,27 +61,31 @@ export default function Chat() {
                             } = message;
 
                             if (error_flag) {
-                                setMessages((prev) => [
-                                    ...prev,
-                                    {
-                                        author,
-                                        timestamp: new Date(
-                                            timestamp,
-                                        ).toLocaleTimeString(),
-                                        error: true,
-                                    },
-                                ]);
+                                dispatch(
+                                    setMessages([
+                                        ...messages,
+                                        {
+                                            author,
+                                            timestamp: new Date(
+                                                timestamp,
+                                            ).toLocaleTimeString(),
+                                            error: true,
+                                        },
+                                    ]),
+                                );
                             } else {
-                                setMessages((prev) => [
-                                    ...prev,
-                                    {
-                                        author,
-                                        timestamp: new Date(
-                                            timestamp,
-                                        ).toLocaleTimeString(),
-                                        text,
-                                    },
-                                ]);
+                                dispatch(
+                                    setMessages([
+                                        ...messages,
+                                        {
+                                            author,
+                                            timestamp: new Date(
+                                                timestamp,
+                                            ).toLocaleTimeString(),
+                                            text,
+                                        },
+                                    ]),
+                                );
                             }
                             break;
                         }
@@ -102,16 +110,18 @@ export default function Chat() {
                                 lastModified: message.timestamp,
                             });
 
-                            setMessages((prev) => [
-                                ...prev,
-                                {
-                                    author: message.username,
-                                    timestamp: new Date(
-                                        message.timestamp,
-                                    ).toLocaleTimeString(),
-                                    file,
-                                },
-                            ]);
+                            dispatch(
+                                setMessages([
+                                    ...messages,
+                                    {
+                                        author: message.username,
+                                        timestamp: new Date(
+                                            message.timestamp,
+                                        ).toLocaleTimeString(),
+                                        file,
+                                    },
+                                ]),
+                            );
 
                             break;
                         }
@@ -167,14 +177,16 @@ export default function Chat() {
 
             ws.send(JSON.stringify(payload));
 
-            setMessages([
-                ...messages,
-                {
-                    author: username,
-                    timestamp: new Date().toLocaleTimeString(),
-                    file: file,
-                },
-            ]);
+            dispatch(
+                setMessages([
+                    ...messages,
+                    {
+                        author: username,
+                        timestamp: new Date().toLocaleTimeString(),
+                        file: file,
+                    },
+                ]),
+            );
 
             setFile(null);
         };

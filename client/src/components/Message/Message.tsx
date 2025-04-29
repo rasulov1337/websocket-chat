@@ -1,7 +1,7 @@
-import { Box, Button, Typography } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { Box, Button, Typography } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 export interface MessageProps {
     author: string;
@@ -19,13 +19,13 @@ export default function Message({
     const handleDownloadFile = () => {
         if (!file) return;
 
-        const blob = new Blob([file], { type: 'text/plain' });
+        const blob = new Blob([file], { type: "text/plain" });
 
         // Create a URL for the Blob
         const url = URL.createObjectURL(blob);
 
         // Create a temporary anchor element
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = url;
         a.download = file.name;
 
