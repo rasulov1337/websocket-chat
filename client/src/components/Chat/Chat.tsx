@@ -32,95 +32,88 @@ export default function Chat() {
         console.log("ws was initialized!");
     }, [loggedIn]);
 
-    const handleMessageReceive = (event: Event) => {
+    const handleMessageReceive = (event: MessageEvent) => {
         try {
             const data = event.data;
 
             // Только строка — это JSON
-            if (typeof data === "string") {
-                const message = JSON.parse(data);
+            const message = JSON.parse(data);
 
-                switch (message.type) {
-                    case "receive": {
-                        const {
-                            username: author,
-                            timestamp,
-                            message: text,
-                            error_flag,
-                        } = message;
+            switch (message.type) {
+                case "receive": {
+                    const {
+                        username: author,
+                        timestamp,
+                        message: text,
+                        error_flag,
+                    } = message;
 
-                        if (error_flag) {
-                            dispatch(
-                                setMessages([
-                                    ...messages,
-                                    {
-                                        author,
-                                        timestamp: new Date(
-                                            timestamp,
-                                        ).toLocaleTimeString(),
-                                        error: true,
-                                    },
-                                ]),
-                            );
-                        } else {
-                            dispatch(
-                                setMessages([
-                                    ...messages,
-                                    {
-                                        author,
-                                        timestamp: new Date(
-                                            timestamp,
-                                        ).toLocaleTimeString(),
-                                        text,
-                                    },
-                                ]),
-                            );
-                        }
-                        break;
-                    }
-
-                    case "file": {
-                        // Декодируем Base64 в Blob
-                        const byteString = atob(message.data);
-                        const arrayBuffer = new ArrayBuffer(byteString.length);
-                        const intArray = new Uint8Array(arrayBuffer);
-
-                        for (let i = 0; i < byteString.length; i++) {
-                            intArray[i] = byteString.charCodeAt(i);
-                        }
-
-                        const blob = new Blob([intArray], {
-                            type: message.mimeType,
-                        });
-                        const file = new File([blob], message.filename, {
-                            type: message.mimeType,
-                            lastModified: message.timestamp,
-                        });
-
+                    if (error_flag) {
                         dispatch(
                             setMessages([
                                 ...messages,
                                 {
-                                    author: message.username,
+                                    author,
                                     timestamp: new Date(
-                                        message.timestamp,
+                                        timestamp,
                                     ).toLocaleTimeString(),
-                                    file,
+                                    error: true,
                                 },
                             ]),
                         );
+                    } else {
+                        dispatch(
+                            setMessages([
+                                ...messages,
+                                {
+                                    author,
+                                    timestamp: new Date(
+                                        timestamp,
+                                    ).toLocaleTimeString(),
+                                    text,
+                                },
+                            ]),
+                        );
+                    }
+                    break;
+                }
 
-                        break;
+                case "file": {
+                    // Декодируем Base64 в Blob
+                    const byteString = atob(message.data);
+                    const arrayBuffer = new ArrayBuffer(byteString.length);
+                    const intArray = new Uint8Array(arrayBuffer);
+
+                    for (let i = 0; i < byteString.length; i++) {
+                        intArray[i] = byteString.charCodeAt(i);
                     }
 
-                    default:
-                        console.warn(
-                            "Неизвестный тип сообщения:",
-                            message.type,
-                        );
+                    const blob = new Blob([intArray], {
+                        type: message.mimeType,
+                    });
+                    const file = new File([blob], message.filename, {
+                        type: message.mimeType,
+                        lastModified: message.timestamp,
+                    });
+
+                    dispatch(
+                        setMessages([
+                            ...messages,
+                            {
+                                author: message.username,
+                                timestamp: new Date(
+                                    message.timestamp,
+                                ).toLocaleTimeString(),
+                                file,
+                            },
+                        ]),
+                    );
+
+                    break;
                 }
-            } else {
-                console.warn("Получены не текстовые данные", data);
+
+                default:
+                    console.warn("Неизвестный тип сообщения:", message.type);
             }
         } catch (err) {
             console.error("Ошибка при обработке сообщения:", err);
