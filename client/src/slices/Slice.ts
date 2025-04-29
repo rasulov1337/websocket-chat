@@ -1,22 +1,29 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const slice = createSlice({
-    name: 'transfersSlice',
+    name: "transfersSlice",
     initialState: {
-        username: '',
+        username: "",
         loggedIn: false,
+        dialogOpen: true,
     },
     // Редьюсеры в слайсах мутируют состояние и ничего не возвращают наружу
     reducers: {
         setUsername: (state, { payload }) => {
             state.username = payload;
         },
-        setLoggedIn: (state, { payload }) => {
-            state.loggedIn = payload;
+        login: (state) => {
+            state.dialogOpen = false;
+            state.loggedIn = true;
+        },
+        logout: (state) => {
+            state.loggedIn = false;
+            state.username = "";
+            state.dialogOpen = true;
         },
     },
 });
 
-export const { setUsername, setLoggedIn } = slice.actions;
+export const { setUsername, login, logout } = slice.actions;
 
 export default slice.reducer;
