@@ -2,23 +2,25 @@ import { Box, Button, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { downloadFile } from '../../Utils';
+import { dataUrlToFile, downloadFile } from '../../Utils';
 
 export interface MessageProps {
     username: string;
-    file: File;
+    dataUrl: string;
+    filename: string;
     error?: boolean;
     timestamp: string;
 }
 
 export default function Message({
     username,
-    file,
+    dataUrl,
+    filename,
     error,
     timestamp,
 }: MessageProps) {
-    const handleDownloadFile = () => {
-        downloadFile(file);
+    const handleDownloadFile = async () => {
+        downloadFile(await dataUrlToFile(dataUrl, filename));
     };
 
     return (
@@ -34,7 +36,7 @@ export default function Message({
                         startIcon={<SaveAltIcon />}
                         onClick={handleDownloadFile}
                     >
-                        {file?.name}
+                        {filename}
                     </Button>
                 )}
             </Box>

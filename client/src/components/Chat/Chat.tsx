@@ -8,7 +8,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { sliceActions } from '../../slices/Slice';
 import VisuallyHiddenInput from '../VisuallyHiddenInput/VisuallyHiddenInput';
 import { alertActions } from '../../slices/Alert';
-import { dataUrlToFile, fileToDataUrl } from '../../Utils';
+import { fileToDataUrl } from '../../Utils';
 
 export default function Chat() {
     const username = useSelector((state: RootState) => state.slice.username);
@@ -39,14 +39,13 @@ export default function Chat() {
 
             const { username, timestamp, message, error_flag } = packet;
 
-            const file = await dataUrlToFile(message.data, message.filename);
-
             dispatch(
                 sliceActions.appendMessage({
                     username,
                     timestamp: new Date(timestamp).toLocaleTimeString(),
                     error: error_flag,
-                    file,
+                    dataUrl: message.data,
+                    filename: message.filename,
                 })
             );
         } catch (err) {
@@ -97,15 +96,13 @@ export default function Chat() {
 
         const dataUrl = await fileToDataUrl(file);
 
-        const message = {
-            filename: file.name,
-            data: dataUrl,
-        };
-
         const payload = {
             username,
             timestamp: Date.now(),
-            message,
+            message: {
+                filename: file.name,
+                data: dataUrl,
+            },
         };
 
         ws?.send(JSON.stringify(payload));
@@ -114,7 +111,8 @@ export default function Chat() {
             sliceActions.appendMessage({
                 username,
                 timestamp: new Date().toLocaleTimeString(),
-                file,
+                dataUrl,
+                filename: file.name,
             })
         );
 
