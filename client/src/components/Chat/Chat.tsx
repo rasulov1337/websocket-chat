@@ -120,6 +120,12 @@ export default function Chat() {
         setFile(null);
     };
 
+    const formatter = new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+    });
+    const result = formatter.format(new Date());
+
     return (
         <Box
             sx={{
@@ -133,7 +139,7 @@ export default function Chat() {
             <Box padding="20px 50px">
                 <Typography sx={{ textAlign: 'center' }} color="secondary.main">
                     {loggedIn ? (
-                        '8 марта'
+                        result
                     ) : (
                         <Box
                             sx={{
