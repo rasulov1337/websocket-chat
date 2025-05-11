@@ -1,29 +1,29 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
     typography: {
         allVariants: {
-            color: "#fff",
+            color: '#fff',
         },
         button: {
             fontWeight: 700, // Делаем все кнопки жирными
         },
         h2: {
-            fontSize: "32px",
+            fontSize: '32px',
         },
     },
     palette: {
         primary: {
-            main: "#E12726", // Custom primary color (Deep Orange)
-            contrastText: "#fff",
+            main: '#E12726', // Custom primary color (Deep Orange)
+            contrastText: '#fff',
         },
         secondary: {
-            main: "#ffffff9c",
-            contrastText: "#fff",
+            main: '#ffffff9c',
+            contrastText: '#fff',
         },
         background: {
-            default: "#000",
-            paper: "#000",
+            default: '#000',
+            paper: '#000',
         },
     },
     components: {
@@ -35,26 +35,26 @@ const theme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    height: "45px",
+                    height: '45px',
                 },
             },
         },
         MuiTextField: {
             styleOverrides: {
                 root: {
-                    "& .MuiInputBase-input": {
-                        color: "#fff", // Цвет текста
+                    '& .MuiInputBase-input': {
+                        color: '#fff', // Цвет текста
                     },
-                    "& .MuiInputLabel-root": {
-                        color: "#aaa", // Цвет label
+                    '& .MuiInputLabel-root': {
+                        color: '#aaa', // Цвет label
                     },
-                    "& .MuiInputLabel-root.Mui-focused": {
-                        color: "#aaa", // Цвет label при вводе (фокус)
+                    '& .MuiInputLabel-root.Mui-focused': {
+                        color: '#aaa', // Цвет label при вводе (фокус)
                     },
-                    "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: "#555" }, // Обычная рамка
-                        "&:hover fieldset": { borderColor: "#fff" }, // Рамка при наведении
-                        "&.Mui-focused fieldset": { borderColor: "#555" }, // Рамка при фокусе
+                    '& .MuiOutlinedInput-root': {
+                        '& fieldset': { borderColor: '#555' }, // Обычная рамка
+                        '&:hover fieldset': { borderColor: '#fff' }, // Рамка при наведении
+                        '&.Mui-focused fieldset': { borderColor: '#555' }, // Рамка при фокусе
                     },
                 },
             },
@@ -62,7 +62,14 @@ const theme = createTheme({
         MuiAlert: {
             styleOverrides: {
                 root: {
-                    "& .MuiAlert-filled": {},
+                    '& .MuiAlert-filled': {},
+                },
+            },
+        },
+        MuiSkeleton: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#212121',
                 },
             },
         },

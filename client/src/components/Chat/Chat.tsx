@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Skeleton, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import Message from '../Message/Message';
@@ -9,6 +9,7 @@ import { sliceActions } from '../../slices/Slice';
 import VisuallyHiddenInput from '../VisuallyHiddenInput/VisuallyHiddenInput';
 import { alertActions } from '../../slices/Alert';
 import { fileToDataUrl } from '../../Utils';
+import MessageSkeleton from '../Message/MessageSkeleton';
 
 export default function Chat() {
     const username = useSelector((state: RootState) => state.slice.username);
@@ -131,12 +132,32 @@ export default function Chat() {
         >
             <Box padding="20px 50px">
                 <Typography sx={{ textAlign: 'center' }} color="secondary.main">
-                    8 марта
+                    {loggedIn ? (
+                        '8 марта'
+                    ) : (
+                        <Box
+                            sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Skeleton
+                                sx={{ fontSize: '16px' }}
+                                variant="text"
+                                width={40}
+                            />
+                        </Box>
+                    )}
                 </Typography>
                 <Box display="flex" flexDirection="column" gap="25px">
-                    {messages.map((msg, index) => (
-                        <Message key={index} {...msg} />
-                    ))}
+                    {loggedIn
+                        ? messages.map((msg, index) => (
+                              <Message key={index} {...msg} />
+                          ))
+                        : Array.from({ length: 3 }).map((_, index) => (
+                              <MessageSkeleton key={index} />
+                          ))}
                 </Box>
             </Box>
             <Box
