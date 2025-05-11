@@ -1,10 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { MessageProps } from "../components/Message/Message";
+import { createSlice } from '@reduxjs/toolkit';
+import { MessageProps } from '../components/Message/Message';
 
 const slice = createSlice({
-    name: "globalSlice",
+    name: 'globalSlice',
     initialState: {
-        username: "",
+        username: '',
         loggedIn: false,
         dialogOpen: true,
         messages: [] as MessageProps[],
@@ -20,16 +20,19 @@ const slice = createSlice({
         },
         logout: (state) => {
             state.loggedIn = false;
-            state.username = "";
+            state.username = '';
             state.dialogOpen = true;
             state.messages = [];
         },
-        setMessages: (state, { payload }) => {
-            state.messages = payload;
+        appendMessage: (state, { payload }: { payload: MessageProps }) => {
+            state.messages.push(payload);
+        },
+        clearMessages: (state) => {
+            state.messages = [];
         },
     },
 });
 
-export const { setUsername, login, logout, setMessages } = slice.actions;
+export const sliceActions = slice.actions;
 
 export default slice.reducer;

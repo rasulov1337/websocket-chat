@@ -1,28 +1,28 @@
-import Button from "@mui/material/Button";
-import MUIDialog from "@mui/material/Dialog";
-import Typography from "@mui/material/Typography";
-import { DialogActions, DialogContent, TextField } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import { styled } from "@mui/material/styles";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../Types";
-import { login, setUsername } from "../../slices/Slice";
+import Button from '@mui/material/Button';
+import MUIDialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
+import { DialogActions, DialogContent, TextField } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+import { styled } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../Types';
+import { sliceActions } from '../../slices/Slice';
 
 const StyledDialog = styled(MUIDialog)(({ theme }) => ({
-    ".MuiDialog-paper": {
-        borderRadius: "0",
-        padding: "5px 10px",
-        border: "1px solid",
+    '.MuiDialog-paper': {
+        borderRadius: '0',
+        padding: '5px 10px',
+        border: '1px solid',
         borderColor: theme.palette.primary.main,
     },
-    "& .MuiDialogContent-root": {
+    '& .MuiDialogContent-root': {
         padding: theme.spacing(4),
         background: theme.palette.secondary,
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
     },
-    "& .MuiDialogActions-root": {
+    '& .MuiDialogActions-root': {
         padding: theme.spacing(3),
     },
 }));
@@ -33,11 +33,11 @@ export default function NamePromptDialog() {
     const dispatch = useDispatch();
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(setUsername(e.target.value.trim()));
+        dispatch(sliceActions.setUsername(e.target.value.trim()));
     };
 
     const handleLogin = () => {
-        dispatch(login());
+        dispatch(sliceActions.login());
     };
 
     return (
@@ -61,7 +61,7 @@ export default function NamePromptDialog() {
                 <Button
                     variant="contained"
                     endIcon={<CheckIcon />}
-                    sx={{ width: "100%" }}
+                    sx={{ width: '100%' }}
                     onClick={handleLogin}
                 >
                     Войти
