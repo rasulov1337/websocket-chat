@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        // Современный стандарт JavaScript
+        "target": "ES2022",
+
+        // Используем ES модули
+        "module": "CommonJS",
+
+        // Строгие проверки — обязательны для TS
+        "strict": true,
+
+        // Позволяет импортировать модули без .js/.ts расширения
+        "esModuleInterop": true,
+
+        // Пропустить проверку типов в библиотечных файлах (для скорости)
+        "skipLibCheck": true,
+
+        // Куда складывать скомпилированные файлы
+        "outDir": "./dist",
+
+        // Откуда брать исходники
+        "rootDir": ".",
+
+        // Не требовать явного указания типов everywhere (по желанию)
+        "noImplicitAny": false,
+
+        // Указывает, что это ES Module (соответствует package.json: "type": "module")
+        "moduleDetection": "force"
+    },
+
+    // Какие файлы компилировать
+    "include": ["**/*.ts"]
+}

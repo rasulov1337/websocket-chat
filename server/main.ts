@@ -1,8 +1,8 @@
-const express = require("express");
-const http = require("http");
+const express = require('express');
+const http = require('http');
 
 // Импортируем наши WebSocket-серверы
-const { createEarthServer } = require("./earth");
+const { createEarthServer } = require('./earth');
 
 // Создаем Express-приложение
 const app = express();
@@ -14,10 +14,10 @@ app.use(express.json());
 const server = http.createServer(app);
 
 // Подключаем наши WebSocket-серверы
-createEarthServer(app, server);
+createEarthServer(app);
 
 // Простой эндпоинт для проверки
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
     res.send(`
         <h1>🚀 Сервер межпланетного чата</h1>
         <p>WebSocket серверы:</p>
