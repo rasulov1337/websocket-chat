@@ -68,7 +68,7 @@ function createEarthServer(app) {
     });
 
     // Запуск сервера
-    server.listen(8005, () => {
+    server.listen(8005, '0.0.0.0', () => {
         console.log('Websocket сервер "Земля" запущен на порту 8005');
     });
 }

@@ -1,33 +1,36 @@
-import { Box, Button, Typography } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { Box, Button, Typography } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export interface MessageProps {
-    author: string;
-    file?: File;
+    username: string;
+    message?: {
+        filename: string;
+        data: string;
+    };
     error?: boolean;
     timestamp: string;
 }
 
 export default function Message({
-    author,
-    file,
+    username,
+    message,
     error,
     timestamp,
 }: MessageProps) {
     const handleDownloadFile = () => {
-        if (!file) return;
+        if (!message) return;
 
-        const blob = new Blob([file], { type: "text/plain" });
+        const blob = new Blob([message.data], { type: 'text/plain' });
 
         // Create a URL for the Blob
         const url = URL.createObjectURL(blob);
 
         // Create a temporary anchor element
-        const a = document.createElement("a");
+        const a = document.createElement('a');
         a.href = url;
-        a.download = file.name;
+        a.download = message.filename;
 
         // Append the anchor to the document
         document.body.appendChild(a);
@@ -40,7 +43,7 @@ export default function Message({
         <Box className="chat" display="flex" gap="10px" position="relative">
             <Avatar></Avatar>
             <Box display="flex" flexDirection="column" gap="3px">
-                <Typography> {author}</Typography>
+                <Typography> {username}</Typography>
                 {error ? (
                     <ErrorOutlineIcon />
                 ) : (
@@ -49,7 +52,7 @@ export default function Message({
                         startIcon={<SaveAltIcon />}
                         onClick={handleDownloadFile}
                     >
-                        {file.name}
+                        {message?.filename}
                     </Button>
                 )}
             </Box>
