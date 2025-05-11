@@ -2,41 +2,23 @@ import { Box, Button, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { downloadFile } from '../../Utils';
 
 export interface MessageProps {
     username: string;
-    message?: {
-        filename: string;
-        data: string;
-    };
+    file: File;
     error?: boolean;
     timestamp: string;
 }
 
 export default function Message({
     username,
-    message,
+    file,
     error,
     timestamp,
 }: MessageProps) {
     const handleDownloadFile = () => {
-        if (!message) return;
-
-        const blob = new Blob([message.data], { type: 'text/plain' });
-
-        // Create a URL for the Blob
-        const url = URL.createObjectURL(blob);
-
-        // Create a temporary anchor element
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = message.filename;
-
-        // Append the anchor to the document
-        document.body.appendChild(a);
-
-        // Trigger a click on the anchor
-        a.click();
+        downloadFile(file);
     };
 
     return (
@@ -52,7 +34,7 @@ export default function Message({
                         startIcon={<SaveAltIcon />}
                         onClick={handleDownloadFile}
                     >
-                        {message?.filename}
+                        {file?.name}
                     </Button>
                 )}
             </Box>

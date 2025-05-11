@@ -8,6 +8,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { sliceActions } from '../../slices/Slice';
 import VisuallyHiddenInput from '../VisuallyHiddenInput/VisuallyHiddenInput';
 import { alertActions } from '../../slices/Alert';
+import { dataUrlToFile, fileToDataUrl } from '../../Utils';
 
 export default function Chat() {
     const username = useSelector((state: RootState) => state.slice.username);
@@ -32,18 +33,20 @@ export default function Chat() {
         console.log('ws was initialized!');
     }, [loggedIn]);
 
-    const handleMessageReceive = (event: MessageEvent) => {
+    const handleMessageReceive = async (event: MessageEvent) => {
         try {
             const packet = JSON.parse(event.data);
 
             const { username, timestamp, message, error_flag } = packet;
+
+            const file = await dataUrlToFile(message.data, message.filename);
 
             dispatch(
                 sliceActions.appendMessage({
                     username,
                     timestamp: new Date(timestamp).toLocaleTimeString(),
                     error: error_flag,
-                    message,
+                    file,
                 })
             );
         } catch (err) {
@@ -92,36 +95,30 @@ export default function Chat() {
             return;
         }
 
-        const reader = new FileReader();
+        const dataUrl = await fileToDataUrl(file);
 
-        reader.onload = () => {
-            const base64Data = (reader.result as string).split(',')[1]; // Только данные, без "data:..." префикса
-
-            const message = {
-                filename: file.name,
-                data: base64Data,
-            };
-
-            const payload = {
-                username,
-                timestamp: Date.now(),
-                message,
-            };
-
-            ws?.send(JSON.stringify(payload));
-
-            dispatch(
-                sliceActions.appendMessage({
-                    username,
-                    timestamp: new Date().toLocaleTimeString(),
-                    message,
-                })
-            );
-
-            setFile(null);
+        const message = {
+            filename: file.name,
+            data: dataUrl,
         };
 
-        reader.readAsDataURL(file);
+        const payload = {
+            username,
+            timestamp: Date.now(),
+            message,
+        };
+
+        ws?.send(JSON.stringify(payload));
+
+        dispatch(
+            sliceActions.appendMessage({
+                username,
+                timestamp: new Date().toLocaleTimeString(),
+                file,
+            })
+        );
+
+        setFile(null);
     };
 
     return (
