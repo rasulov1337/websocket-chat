@@ -48,9 +48,17 @@ export default function Chat() {
 
     const handleMessageReceive = async (event: MessageEvent) => {
         try {
-            const payload = JSON.parse(event.data);
+            const payload = JSON.parse(event.data) as MessagePayload;
 
-            dispatch(appendMessage({ payload }));
+            const formattedTime = new Date(
+                payload.timestamp
+            ).toLocaleTimeString();
+
+            dispatch(
+                appendMessage({
+                    payload: { ...payload, timestamp: formattedTime },
+                })
+            );
         } catch (err) {
             console.error('Ошибка при обработке сообщения:', err);
         }
