@@ -35,7 +35,12 @@ export default function Chat() {
             return;
         }
 
-        setWS(new WebSocket('/ws'));
+        if (window.MARS) {
+            setWS(new WebSocket('/ws/mars'));
+        } else {
+            setWS(new WebSocket('/ws/earth'));
+        }
+
         console.log('change ws variable', ws);
         if (!ws) return;
         console.log('ws was initialized!');

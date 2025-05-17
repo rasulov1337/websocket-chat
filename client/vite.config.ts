@@ -9,8 +9,13 @@ export default defineConfig({
         port: 3000,
 
         proxy: {
-            '/ws': {
+            '/ws/earth': {
                 target: 'ws://localhost:8005',
+                ws: true,
+                rewriteWsOrigin: true,
+            },
+            '/ws/mars': {
+                target: 'ws://localhost:8010',
                 ws: true,
                 rewriteWsOrigin: true,
             },

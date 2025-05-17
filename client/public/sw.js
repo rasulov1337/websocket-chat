@@ -2,8 +2,6 @@ const CACHE_NAME = 'v1';
 
 const ALWAYS_CACHE = ['/'];
 
-const CACHE_BLACKLIST = ['/ws'];
-
 // Use the install event to pre-cache all initial resources.
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -38,7 +36,7 @@ self.addEventListener('fetch', (event) => {
                 return fetchResponse;
             } catch {
                 // console.log("Oops! Network error. Let's get it from cache");
-                if (event.request.url in CACHE_BLACKLIST) {
+                if (event.request.url.startswith('/ws')) {
                     // 404
                 }
                 // Get the resource from the cache.
