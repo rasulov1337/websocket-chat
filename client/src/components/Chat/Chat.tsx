@@ -81,6 +81,18 @@ export default function Chat() {
     };
 
     const handleSend = async () => {
+        if (window.MARS) {
+            dispatch(
+                alertActions.setAlert({
+                    title: 'Не удалось отправить сообщение',
+                    text: 'Вы можете только принимать сообщения!',
+                })
+            );
+            dispatch(alertActions.show());
+
+            return;
+        }
+
         if (!file) {
             dispatch(
                 alertActions.setAlert({

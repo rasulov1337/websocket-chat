@@ -35,4 +35,9 @@ function downloadFile(file: File | Blob, filename?: string): void {
     URL.revokeObjectURL(url); // Освобождаем память
 }
 
-export { fileToDataUrl, dataUrlToFile, downloadFile };
+const isMars = () => {
+    const pathname = window.location.pathname;
+    return pathname.startsWith('/mars');
+};
+
+export { fileToDataUrl, dataUrlToFile, downloadFile, isMars };

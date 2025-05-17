@@ -66,7 +66,9 @@ const theme = createTheme({
         MuiAlert: {
             styleOverrides: {
                 root: {
-                    '& .MuiAlert-filled': {},
+                    position: 'fixed',
+                    bottom: '100px',
+                    right: '30px',
                 },
             },
         },

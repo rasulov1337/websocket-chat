@@ -1,18 +1,9 @@
-import MUIAlert from "@mui/material/Alert";
-import MUIAlertTitle from "@mui/material/AlertTitle";
-import { styled } from "@mui/material/styles";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../Types";
-import { Snackbar, SnackbarCloseReason } from "@mui/material";
-import { alertActions } from "../../slices/Alert";
-
-const StyledAlert = styled(MUIAlert)(({ theme }) => ({
-    "&": {
-        position: "fixed",
-        bottom: "100px",
-        right: "30px",
-    },
-}));
+import MUIAlert from '@mui/material/Alert';
+import MUIAlertTitle from '@mui/material/AlertTitle';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../Types';
+import { Snackbar, SnackbarCloseReason } from '@mui/material';
+import { alertActions } from '../../slices/Alert';
 
 const Alert = () => {
     const title = useSelector((state: RootState) => state.alert.title);
@@ -23,9 +14,9 @@ const Alert = () => {
 
     const handleClose = (
         event: React.SyntheticEvent | Event,
-        reason?: SnackbarCloseReason,
+        reason?: SnackbarCloseReason
     ) => {
-        if (reason === "clickaway") {
+        if (reason === 'clickaway') {
             return;
         }
 
@@ -34,11 +25,11 @@ const Alert = () => {
 
     return (
         <>
-            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-                <StyledAlert severity="error">
+            <Snackbar open={open} onClose={handleClose}>
+                <MUIAlert severity="error" variant="filled">
                     <MUIAlertTitle>{title}</MUIAlertTitle>
                     {errorMessage}
-                </StyledAlert>
+                </MUIAlert>
             </Snackbar>
         </>
     );

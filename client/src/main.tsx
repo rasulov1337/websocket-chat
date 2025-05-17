@@ -8,6 +8,7 @@ import theme from './theme';
 
 import store from './store';
 import { Provider } from 'react-redux';
+import { isMars } from './Utils.ts';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
@@ -22,3 +23,5 @@ createRoot(document.getElementById('root')!).render(
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', { scope: '/' });
 }
+
+window.MARS = isMars();
