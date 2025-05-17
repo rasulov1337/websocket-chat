@@ -1,8 +1,8 @@
+import { TRANSPORT_LAYER_ADDRESS } from './consts';
+
 const http = require('http');
 const WebSocket = require('ws');
 const axios = require('axios');
-
-const TRANSPORT_LAYER_ADDRESS = '/';
 
 const PORT = 8010;
 

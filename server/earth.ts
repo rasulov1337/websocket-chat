@@ -2,7 +2,7 @@ const http = require('http');
 const WebSocket = require('ws');
 const axios = require('axios');
 
-const TRANSPORT_LAYER_ADDRESS = '/';
+import { TRANSPORT_LAYER_ADDRESS } from './consts';
 
 const PORT = 8005;
 
