@@ -46,10 +46,10 @@ function createEarthServer(app) {
                 if (isInitData(receivedData)) {
                     username = receivedData.username;
                     users.set(username, ws);
-                    console.log(`Пользователь ${username} подключился`);
+                    console.log(`Earth: Пользователь ${username} подключился`);
                 }
             } catch (err) {
-                console.error('Ошибка обработки сообщения:', err);
+                console.error('Earth: Ошибка обработки сообщения:', err);
             }
         });
 
@@ -57,14 +57,14 @@ function createEarthServer(app) {
         ws.on('close', () => {
             if (username) {
                 users.delete(username);
-                console.log(`Пользователь ${username} отключился`);
+                console.log(`Earth: Пользователь ${username} отключился`);
             }
         });
     });
 
     // Запуск сервера
     server.listen(PORT, '0.0.0.0', () => {
-        console.log(`Websocket сервер "Земля" запущен на порту ${PORT}`);
+        console.log(`Earth: Websocket сервер "Земля" запущен на порту ${PORT}`);
     });
 }
 

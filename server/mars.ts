@@ -1,4 +1,4 @@
-import { isMessageData, MessageData } from './shared';
+import { isMessageData, MessageData, isInitData, InitData } from './shared';
 
 const http = require('http');
 const WebSocket = require('ws');
@@ -14,26 +14,44 @@ function createMarsServer(app) {
 
     // Установка WS соединения
     wss.on('connection', (ws) => {
-        console.log('WS: Connection request received!');
+        console.log('Mars: Connection request received!');
         let username: null | string = null;
+
+        // При получении сообщения
+        ws.on('message', (rawMessage) => {
+            let username: null | string = null;
+
+            try {
+                const receivedData = JSON.parse(rawMessage) as InitData;
+
+                // A user wants to connect
+                if (isInitData(receivedData)) {
+                    username = receivedData.username;
+                    users.set(username, ws);
+                    console.log(`Mars: Пользователь ${username} подключился`);
+                }
+            } catch (err) {
+                console.error('Mars: Ошибка обработки сообщения:', err);
+            }
+        });
 
         // На закрытие соединения
         ws.on('close', () => {
-            console.log('Closing connection with ', username);
+            console.log('Mars: Closing connection with ', username);
             if (username) {
                 users.delete(username);
-                console.log(`Пользователь ${username} отключился`);
+                console.log(`Mars: Пользователь ${username} отключился`);
             }
         });
     });
 
     // POST /receive — получение сообщения с транспортного уровня
     app.post('/receive', (req, res) => {
-        console.log('POST /receive was called');
+        console.log('Mars: POST /receive was called');
 
         if (!isMessageData(req.body)) {
             console.log(
-                'isMessageData() failed => Received non message data => Ignoring...'
+                'Mars: isMessageData() failed => Received non message data => Ignoring...'
             );
             return;
         }
@@ -54,7 +72,7 @@ function createMarsServer(app) {
 
         for (const [username, ws] of users.entries()) {
             if (username !== fromUser && ws.readyState === ws.OPEN) {
-                console.log(`Sending message to ${username} ${payload}`);
+                console.log(`Mars: Sending message to ${username} ${payload}`);
                 ws.send(JSON.stringify(payload));
             }
         }
@@ -64,7 +82,7 @@ function createMarsServer(app) {
 
     // Запуск сервера
     server.listen(PORT, '0.0.0.0', () => {
-        console.log(`Websocket сервер "Марс" запущен на порту ${PORT}`);
+        console.log(`Mars: Websocket сервер "Марс" запущен на порту ${PORT}`);
     });
 }
 
