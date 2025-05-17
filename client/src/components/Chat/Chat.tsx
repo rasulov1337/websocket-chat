@@ -23,8 +23,10 @@ export default function Chat() {
 
     useEffect(() => {
         if (!loggedIn) {
+            if (!ws) return;
+
             console.log('Closing connection...');
-            ws?.close();
+            ws.close();
             return;
         }
 
