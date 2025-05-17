@@ -9,10 +9,10 @@ import { sliceActions } from '../../slices/Slice';
 import VisuallyHiddenInput from '../VisuallyHiddenInput/VisuallyHiddenInput';
 import { alertActions } from '../../slices/Alert';
 import { fileToDataUrl } from '../../Utils';
+import { useUserName } from '../../indexedDB';
 import MessageSkeleton from '../Message/MessageSkeleton';
 
 export default function Chat() {
-    const username = useSelector((state: RootState) => state.slice.username);
     const loggedIn = useSelector((state: RootState) => state.slice.loggedIn);
     const messages = useSelector((state: RootState) => state.slice.messages);
 
@@ -20,6 +20,8 @@ export default function Chat() {
     const [ws, setWS] = useState<null | WebSocket>(null);
 
     const dispatch = useDispatch();
+
+    const { username } = useUserName();
 
     useEffect(() => {
         if (!loggedIn) {

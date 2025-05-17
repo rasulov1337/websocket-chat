@@ -1,5 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { MessageProps } from '../components/Message/Message';
+import { clearDBData, saveMessage, saveUserNameToDB } from '../indexedDB';
+import { MessagePayload, RootState } from '../Types';
+
+export const logout = createAsyncThunk(
+    'user/logout',
+    async (_, { dispatch }) => {
+        await clearDBData();
+        dispatch(sliceActions.logout());
+    }
+);
+
+export const login = createAsyncThunk(
+    'user/login',
+    async (_, { getState, dispatch }) => {
+        const state = getState() as RootState;
+
+        await saveUserNameToDB(state.slice.username);
+        dispatch(sliceActions.setUsername(state.slice.username));
+        dispatch(sliceActions.login());
+    }
+);
 
 const slice = createSlice({
     name: 'globalSlice',

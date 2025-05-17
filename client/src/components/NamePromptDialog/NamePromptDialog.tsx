@@ -5,8 +5,9 @@ import { DialogActions, DialogContent, TextField } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../Types';
-import { sliceActions } from '../../slices/Slice';
+import { AppDispatch, RootState } from '../../Types';
+import { login, sliceActions } from '../../slices/Slice';
+import { useUserName } from '../../indexedDB';
 
 const StyledDialog = styled(MUIDialog)(({ theme }) => ({
     '.MuiDialog-paper': {
@@ -28,16 +29,16 @@ const StyledDialog = styled(MUIDialog)(({ theme }) => ({
 }));
 
 export default function NamePromptDialog() {
-    const username = useSelector((state: RootState) => state.slice.username);
     const open = useSelector((state: RootState) => state.slice.dialogOpen);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
+    const { username } = useUserName();
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(sliceActions.setUsername(e.target.value.trim()));
     };
 
     const handleLogin = () => {
-        dispatch(sliceActions.login());
+        dispatch(login());
     };
 
     return (

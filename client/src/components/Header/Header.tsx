@@ -1,16 +1,16 @@
 import { Avatar, Button, Skeleton } from '@mui/material';
 import './Header.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../Types';
-import { sliceActions } from '../../slices/Slice';
+import { AppDispatch, RootState } from '../../Types';
+import { logout } from '../../slices/Slice';
 
 export default function Header() {
     const username = useSelector((state: RootState) => state.slice.username);
     const loggedIn = useSelector((state: RootState) => state.slice.loggedIn);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleLogout = () => {
-        dispatch(sliceActions.logout());
+        dispatch(logout());
     };
 
     return (
