@@ -88,7 +88,6 @@ function createEarthServer(app) {
         const { username: fromUser, message, timestamp, error_flag } = req.body;
 
         const payload = {
-            type: 'text',
             username: fromUser,
             timestamp,
             message,
