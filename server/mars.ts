@@ -1,15 +1,7 @@
-import {
-    InitData,
-    isInitData,
-    isMessageData,
-    MessageData,
-    ReceivedData,
-    TRANSPORT_LAYER_ADDRESS,
-} from './shared';
+import { isMessageData, MessageData } from './shared';
 
 const http = require('http');
 const WebSocket = require('ws');
-const axios = require('axios');
 
 const PORT = 8011;
 
@@ -22,41 +14,12 @@ function createMarsServer(app) {
 
     // Установка WS соединения
     wss.on('connection', (ws) => {
+        console.log('WS: Connection request received!');
         let username: null | string = null;
-
-        // При получении сообщения
-        ws.on('message', (rawMessage) => {
-            try {
-                const receivedData = JSON.parse(rawMessage) as ReceivedData;
-
-                // The user has already connected. He wants to send a message
-                if (isMessageData(receivedData)) {
-                    axios.post(TRANSPORT_LAYER_ADDRESS, receivedData);
-
-                    // Отправляем всем, кроме отправителя
-                    for (const [user, clientWs] of users.entries()) {
-                        if (
-                            user !== username &&
-                            clientWs.readyState === ws.OPEN
-                        ) {
-                            clientWs.send(JSON.stringify(receivedData));
-                        }
-                    }
-                }
-
-                // A user wants to connect
-                if (isInitData(receivedData)) {
-                    username = receivedData.username;
-                    users.set(username, ws);
-                    console.log(`Пользователь ${username} подключился`);
-                }
-            } catch (err) {
-                console.error('Ошибка обработки сообщения:', err);
-            }
-        });
 
         // На закрытие соединения
         ws.on('close', () => {
+            console.log('Closing connection with ', username);
             if (username) {
                 users.delete(username);
                 console.log(`Пользователь ${username} отключился`);
@@ -66,8 +29,12 @@ function createMarsServer(app) {
 
     // POST /receive — получение сообщения с транспортного уровня
     app.post('/receive', (req, res) => {
+        console.log('POST /receive was called');
+
         if (!isMessageData(req.body)) {
-            console.log('Received non message data. Ignoring...');
+            console.log(
+                'isMessageData() failed => Received non message data => Ignoring...'
+            );
             return;
         }
 
@@ -87,6 +54,7 @@ function createMarsServer(app) {
 
         for (const [username, ws] of users.entries()) {
             if (username !== fromUser && ws.readyState === ws.OPEN) {
+                console.log(`Sending message to ${username} ${payload}`);
                 ws.send(JSON.stringify(payload));
             }
         }
