@@ -1,5 +1,36 @@
 const http = require('http');
 const WebSocket = require('ws');
+const axios = require('axios');
+
+const TRANSPORT_LAYER_ADDRESS = '/';
+
+interface InitData {
+    username: string;
+}
+
+interface MessageData {
+    username: string;
+    message: {
+        filename: string;
+        data: string;
+    };
+    timestamp: number;
+}
+
+type ReceivedData = InitData | MessageData;
+
+const isMessageData = (data: any) => {
+    const d = data as MessageData;
+    return (
+        d.username !== undefined &&
+        d.timestamp !== undefined &&
+        d.message !== undefined
+    );
+};
+
+const isInitData = (data: any): data is InitData => {
+    return (data as InitData).username !== undefined;
+};
 
 // Хранилище пользователей и кэшированных сообщений
 const users = new Map(); // username -> ws
@@ -10,27 +41,33 @@ function createEarthServer(app) {
 
     // Установка WS соединения
     wss.on('connection', (ws) => {
-        let username = null;
+        let username: null | string = null;
 
         // При получении сообщения
         ws.on('message', (rawMessage) => {
             try {
-                const message = JSON.parse(rawMessage);
+                const receivedData = JSON.parse(rawMessage) as ReceivedData;
 
-                if (!('message' in message)) {
-                    username = message.username;
-                    users.set(username, ws);
-                    console.log(`Пользователь ${username} подключился`);
-                } else {
+                // The user has already connected. He wants to send a message
+                if (isMessageData(receivedData)) {
+                    // axios.post(TRANSPORT_LAYER_ADDRESS, receivedData);
+
                     // Отправляем всем, кроме отправителя
                     for (const [user, clientWs] of users.entries()) {
                         if (
                             user !== username &&
                             clientWs.readyState === ws.OPEN
                         ) {
-                            clientWs.send(JSON.stringify(message));
+                            clientWs.send(JSON.stringify(receivedData));
                         }
                     }
+                }
+
+                // A user wants to connect
+                if (isInitData(receivedData)) {
+                    username = receivedData.username;
+                    users.set(username, ws);
+                    console.log(`Пользователь ${username} подключился`);
                 }
             } catch (err) {
                 console.error('Ошибка обработки сообщения:', err);
