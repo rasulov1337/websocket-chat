@@ -11,7 +11,7 @@ const http = require('http');
 const WebSocket = require('ws');
 const axios = require('axios');
 
-const PORT = 8010;
+const PORT = 8011;
 
 // Хранилище пользователей и кэшированных сообщений
 const users = new Map(); // username -> ws
