@@ -4,7 +4,7 @@ const axios = require('axios');
 
 const TRANSPORT_LAYER_ADDRESS = '/';
 
-const PORT = 8005;
+const PORT = 8010;
 
 interface InitData {
     username: string;
@@ -12,6 +12,7 @@ interface InitData {
 
 interface MessageData {
     username: string;
+    error_flag: boolean;
     message: {
         filename: string;
         data: string;
@@ -37,7 +38,7 @@ const isInitData = (data: any): data is InitData => {
 // Хранилище пользователей и кэшированных сообщений
 const users = new Map(); // username -> ws
 
-function createEarthServer(app) {
+function createMarsServer(app) {
     const server = http.createServer(app);
     const wss = new WebSocket.Server({ server });
 
@@ -85,10 +86,40 @@ function createEarthServer(app) {
         });
     });
 
+    // POST /receive — получение сообщения с транспортного уровня
+    app.post('/receive', (req, res) => {
+        if (!isMessageData(req.body)) {
+            console.log('Received non message data. Ignoring...');
+            return;
+        }
+
+        const {
+            username: fromUser,
+            message,
+            timestamp,
+            error_flag,
+        } = req.body as MessageData;
+
+        const payload = {
+            username: fromUser,
+            timestamp,
+            message,
+            error_flag,
+        };
+
+        for (const [username, ws] of users.entries()) {
+            if (username !== fromUser && ws.readyState === ws.OPEN) {
+                ws.send(JSON.stringify(payload));
+            }
+        }
+
+        res.status(200).send('OK');
+    });
+
     // Запуск сервера
     server.listen(PORT, '0.0.0.0', () => {
-        console.log(`Websocket сервер "Земля" запущен на порту ${PORT}`);
+        console.log(`Websocket сервер "Марс" запущен на порту ${PORT}`);
     });
 }
 
-module.exports = { createEarthServer };
+module.exports = { createMarsServer };
