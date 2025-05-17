@@ -36,6 +36,7 @@ const slice = createSlice({
         loggedIn: false,
         dialogOpen: true,
         messages: [] as MessagePayload[],
+        isConnected: false,
     },
     // Редьюсеры в слайсах мутируют состояние и ничего не возвращают наружу
     reducers: {
@@ -60,6 +61,9 @@ const slice = createSlice({
         },
         clearMessages: (state) => {
             state.messages = [];
+        },
+        setIsConnected: (state, { payload }: { payload: boolean }) => {
+            state.isConnected = payload;
         },
     },
 });

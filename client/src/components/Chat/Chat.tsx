@@ -14,6 +14,9 @@ import MessageSkeleton from '../Message/MessageSkeleton';
 
 export default function Chat() {
     const loggedIn = useSelector((state: RootState) => state.slice.loggedIn);
+    const isConnected = useSelector(
+        (state: RootState) => state.slice.isConnected
+    );
 
     const [file, setFile] = useState<null | File>(null);
     const [ws, setWS] = useState<null | WebSocket>(null);
@@ -53,6 +56,7 @@ export default function Chat() {
 
         ws.onopen = () => {
             console.log('Соединение открыто');
+            dispatch(sliceActions.setIsConnected(true));
             ws.send(
                 JSON.stringify({
                     username,
@@ -103,12 +107,14 @@ export default function Chat() {
         ws?.send(JSON.stringify(payload));
 
         dispatch(
-            sliceActions.appendMessage({
-                username,
-                timestamp: new Date().toLocaleTimeString(),
-                message: {
-                    filename: file.name,
-                    data: dataUrl,
+            appendMessage({
+                payload: {
+                    username,
+                    timestamp: new Date().toLocaleTimeString(),
+                    message: {
+                        filename: file.name,
+                        data: dataUrl,
+                    },
                 },
             })
         );
@@ -202,6 +208,7 @@ export default function Chat() {
                     endIcon=<SendIcon />
                     sx={{ flex: '0 1 auto' }}
                     onClick={handleSend}
+                    disabled={!isConnected}
                 >
                     отправить
                 </Button>

@@ -36,6 +36,10 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     height: '45px',
+                    '&.Mui-disabled': {
+                        backgroundColor: '#333',
+                        color: '#888',
+                    },
                 },
             },
         },
