@@ -141,25 +141,29 @@ export default function Chat() {
             className="chat"
         >
             <Box padding="20px 50px">
-                <Typography sx={{ textAlign: 'center' }} color="secondary.main">
-                    {loggedIn ? (
-                        result
-                    ) : (
-                        <Box
-                            sx={{
-                                width: '100%',
-                                display: 'flex',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <Skeleton
-                                sx={{ fontSize: '16px' }}
-                                variant="text"
-                                width={40}
-                            />
-                        </Box>
-                    )}
-                </Typography>
+                {loggedIn ? (
+                    <Typography
+                        sx={{ textAlign: 'center' }}
+                        color="secondary.main"
+                    >
+                        {result}
+                    </Typography>
+                ) : (
+                    <Box
+                        sx={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Skeleton
+                            sx={{ fontSize: '16px' }}
+                            variant="text"
+                            width={40}
+                        />
+                    </Box>
+                )}
+
                 <Box display="flex" flexDirection="column" gap="25px">
                     {loggedIn
                         ? messages.map((msg, index) => (
