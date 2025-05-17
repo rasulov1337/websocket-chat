@@ -1,13 +1,10 @@
 # Launch
 
-## Client
-
 ```sh
-yarn # Installs deps
-yarn dev
+docker compose up
 ```
 
-## Server
+# Individual Launch
 
 ### Docker
 
@@ -18,6 +15,15 @@ docker run -p 8005:8005 -p 8010:8010 ws-server  # Run
 ```
 
 ### Native
+
+#### Client
+
+```sh
+yarn # Installs deps
+yarn dev
+```
+
+#### Server
 
 ```sh
 yarn  # Installs deps

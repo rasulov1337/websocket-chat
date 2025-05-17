@@ -1,0 +1,16 @@
+services:
+    client:
+        build:
+            context: ./client/
+            dockerfile: Dockerfile.nginx
+        ports:
+            - '8077:8077' # nginx static
+        depends_on:
+            - server
+
+    server:
+        build:
+            context: ./server/
+            dockerfile: Dockerfile.server
+        ports:
+            - '8005:8005'

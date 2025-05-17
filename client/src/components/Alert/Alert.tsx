@@ -13,7 +13,7 @@ const Alert = () => {
     const dispatch = useDispatch();
 
     const handleClose = (
-        event: React.SyntheticEvent | Event,
+        _: React.SyntheticEvent | Event,
         reason?: SnackbarCloseReason
     ) => {
         if (reason === 'clickaway') {
