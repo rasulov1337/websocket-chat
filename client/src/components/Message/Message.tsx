@@ -3,32 +3,24 @@ import Avatar from '@mui/material/Avatar';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { dataUrlToFile, downloadFile } from '../../Utils';
+import { MessagePayload } from '../../Types';
 
-export interface MessageProps {
-    username: string;
-    dataUrl: string;
-    filename: string;
-    error?: boolean;
-    timestamp: string;
-}
-
-export default function Message({
-    username,
-    dataUrl,
-    filename,
-    error,
-    timestamp,
-}: MessageProps) {
+export default function Message(payload: MessagePayload) {
     const handleDownloadFile = async () => {
-        downloadFile(await dataUrlToFile(dataUrl, filename));
+        downloadFile(
+            await dataUrlToFile(
+                payload.message!.data,
+                payload.message!.filename
+            )
+        );
     };
 
     return (
         <Box className="chat" display="flex" gap="10px" position="relative">
             <Avatar></Avatar>
             <Box display="flex" flexDirection="column" gap="3px">
-                <Typography> {username}</Typography>
-                {error ? (
+                <Typography> {payload.username}</Typography>
+                {payload.error_flag ? (
                     <ErrorOutlineIcon />
                 ) : (
                     <Button
@@ -36,7 +28,7 @@ export default function Message({
                         startIcon={<SaveAltIcon />}
                         onClick={handleDownloadFile}
                     >
-                        {filename}
+                        {payload.message?.filename}
                     </Button>
                 )}
             </Box>
@@ -46,7 +38,7 @@ export default function Message({
                 fontSize="12px"
                 color="secondary.main"
             >
-                {timestamp}
+                {payload.timestamp}
             </Typography>
         </Box>
     );

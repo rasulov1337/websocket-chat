@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { sliceActions } from './slices/Slice';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from './Types';
+import { RootState, MessagePayload } from './Types';
 
 const DB_NAME = 'AppDB';
 const DB_VERSION = 1;
@@ -17,7 +17,10 @@ function openDatabase(): Promise<IDBDatabase> {
             const db = request.result;
 
             if (!db.objectStoreNames.contains(USER_STORE)) {
-                db.createObjectStore(USER_STORE, { keyPath: 'id' });
+                db.createObjectStore(USER_STORE, {
+                    keyPath: 'id',
+                    autoIncrement: true,
+                });
             }
 
             if (!db.objectStoreNames.contains(MSG_STORE)) {
@@ -75,4 +78,35 @@ export function useUserName() {
     }, []);
 
     return { username };
+}
+
+export function useMessages() {
+    const messages = useSelector((state: RootState) => state.slice.messages);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        getMessages().then((messages) => {
+            if (!messages) return;
+
+            dispatch(sliceActions.setMessages(messages));
+        });
+    }, []);
+
+    return { messages };
+}
+
+export async function saveMessage(payload: MessagePayload): Promise<void> {
+    const db = await openDatabase();
+    const tx = db.transaction(MSG_STORE, 'readwrite');
+    tx.objectStore(MSG_STORE).put({ ...payload });
+}
+
+export async function getMessages(): Promise<MessagePayload[]> {
+    const db = await openDatabase();
+    const tx = db.transaction(MSG_STORE, 'readonly');
+    return new Promise((resolve, reject) => {
+        const req = tx.objectStore(MSG_STORE).getAll();
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
 }

@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { MessageProps } from '../components/Message/Message';
 import { clearDBData, saveMessage, saveUserNameToDB } from '../indexedDB';
 import { MessagePayload, RootState } from '../Types';
 
@@ -22,13 +21,21 @@ export const login = createAsyncThunk(
     }
 );
 
+export const appendMessage = createAsyncThunk(
+    'message/append',
+    async ({ payload }: { payload: MessagePayload }, { dispatch }) => {
+        await saveMessage(payload);
+        dispatch(sliceActions.appendMessage(payload));
+    }
+);
+
 const slice = createSlice({
     name: 'globalSlice',
     initialState: {
         username: '',
         loggedIn: false,
         dialogOpen: true,
-        messages: [] as MessageProps[],
+        messages: [] as MessagePayload[],
     },
     // Редьюсеры в слайсах мутируют состояние и ничего не возвращают наружу
     reducers: {
@@ -45,8 +52,11 @@ const slice = createSlice({
             state.dialogOpen = true;
             state.messages = [];
         },
-        appendMessage: (state, { payload }: { payload: MessageProps }) => {
+        appendMessage: (state, { payload }: { payload: MessagePayload }) => {
             state.messages.push(payload);
+        },
+        setMessages: (state, { payload }: { payload: MessagePayload[] }) => {
+            state.messages = payload;
         },
         clearMessages: (state) => {
             state.messages = [];

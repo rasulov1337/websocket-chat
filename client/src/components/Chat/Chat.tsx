@@ -3,25 +3,25 @@ import SendIcon from '@mui/icons-material/Send';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import Message from '../Message/Message';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../Types';
+import { AppDispatch, RootState } from '../../Types';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { sliceActions } from '../../slices/Slice';
+import { appendMessage, sliceActions } from '../../slices/Slice';
 import VisuallyHiddenInput from '../VisuallyHiddenInput/VisuallyHiddenInput';
 import { alertActions } from '../../slices/Alert';
 import { fileToDataUrl } from '../../Utils';
-import { useUserName } from '../../indexedDB';
+import { useMessages, useUserName } from '../../indexedDB';
 import MessageSkeleton from '../Message/MessageSkeleton';
 
 export default function Chat() {
     const loggedIn = useSelector((state: RootState) => state.slice.loggedIn);
-    const messages = useSelector((state: RootState) => state.slice.messages);
 
     const [file, setFile] = useState<null | File>(null);
     const [ws, setWS] = useState<null | WebSocket>(null);
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const { username } = useUserName();
+    const { messages } = useMessages();
 
     useEffect(() => {
         if (!loggedIn) {
@@ -40,19 +40,9 @@ export default function Chat() {
 
     const handleMessageReceive = async (event: MessageEvent) => {
         try {
-            const packet = JSON.parse(event.data);
+            const payload = JSON.parse(event.data);
 
-            const { username, timestamp, message, error_flag } = packet;
-
-            dispatch(
-                sliceActions.appendMessage({
-                    username,
-                    timestamp: new Date(timestamp).toLocaleTimeString(),
-                    error: error_flag,
-                    dataUrl: message.data,
-                    filename: message.filename,
-                })
-            );
+            dispatch(appendMessage({ payload }));
         } catch (err) {
             console.error('Ошибка при обработке сообщения:', err);
         }
@@ -116,14 +106,17 @@ export default function Chat() {
             sliceActions.appendMessage({
                 username,
                 timestamp: new Date().toLocaleTimeString(),
-                dataUrl,
-                filename: file.name,
+                message: {
+                    filename: file.name,
+                    data: dataUrl,
+                },
             })
         );
 
         setFile(null);
     };
 
+    // todo: move me. i should not be here.
     const formatter = new Intl.DateTimeFormat('en-GB', {
         day: 'numeric',
         month: 'long',
