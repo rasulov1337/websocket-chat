@@ -14,7 +14,7 @@ RUN yarn install --frozen-lockfile
 COPY . .
 
 # Указываем порт, который будет слушать WebSocket-сервер
-EXPOSE 3000
+EXPOSE 8005 8010
 
 # Команда запуска сервера
 CMD ["yarn", "start"]

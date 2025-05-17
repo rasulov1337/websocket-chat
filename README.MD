@@ -1,7 +1,7 @@
 # Launch
 
 ```sh
-docker compose up
+docker compose up --build
 ```
 
 # Individual Launch
