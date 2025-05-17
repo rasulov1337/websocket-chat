@@ -56,7 +56,8 @@ export async function loadUserNameFromDB(): Promise<string | null> {
 
 export async function clearDBData(): Promise<void> {
     const db = await openDatabase();
-    const tx = db.transaction(USER_STORE, 'readwrite');
+    const tx = db.transaction([USER_STORE, MSG_STORE], 'readwrite');
+
     tx.objectStore(USER_STORE).clear();
     tx.objectStore(MSG_STORE).clear();
 }
