@@ -25,7 +25,7 @@ const Alert = () => {
 
     return (
         <>
-            <Snackbar open={open} onClose={handleClose}>
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
                 <MUIAlert severity="error" variant="filled">
                     <MUIAlertTitle>{title}</MUIAlertTitle>
                     {errorMessage}
