@@ -6,13 +6,10 @@ import { dataUrlToFile, downloadFile } from '../../Utils';
 import { MessagePayload } from '../../Types';
 
 export default function Message(payload: MessagePayload) {
+    const filename = 'File';
+
     const handleDownloadFile = async () => {
-        downloadFile(
-            await dataUrlToFile(
-                payload.message!.data,
-                payload.message!.filename
-            )
-        );
+        downloadFile(await dataUrlToFile(payload.message, filename));
     };
 
     return (
@@ -28,7 +25,7 @@ export default function Message(payload: MessagePayload) {
                         startIcon={<SaveAltIcon />}
                         onClick={handleDownloadFile}
                     >
-                        {payload.message?.filename}
+                        {filename}
                     </Button>
                 )}
             </Box>

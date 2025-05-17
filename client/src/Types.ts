@@ -7,8 +7,5 @@ export type MessagePayload = {
     timestamp: string;
     username: string;
     error_flag?: boolean;
-    message?: {
-        filename: string;
-        data: string;
-    };
+    message: string;
 };

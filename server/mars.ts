@@ -1,39 +1,17 @@
-import { TRANSPORT_LAYER_ADDRESS } from './consts';
+import {
+    InitData,
+    isInitData,
+    isMessageData,
+    MessageData,
+    ReceivedData,
+    TRANSPORT_LAYER_ADDRESS,
+} from './shared';
 
 const http = require('http');
 const WebSocket = require('ws');
 const axios = require('axios');
 
 const PORT = 8010;
-
-interface InitData {
-    username: string;
-}
-
-interface MessageData {
-    username: string;
-    error_flag: boolean;
-    message: {
-        filename: string;
-        data: string;
-    };
-    timestamp: number;
-}
-
-type ReceivedData = InitData | MessageData;
-
-const isMessageData = (data: any) => {
-    const d = data as MessageData;
-    return (
-        d.username !== undefined &&
-        d.timestamp !== undefined &&
-        d.message !== undefined
-    );
-};
-
-const isInitData = (data: any): data is InitData => {
-    return (data as InitData).username !== undefined;
-};
 
 // Хранилище пользователей и кэшированных сообщений
 const users = new Map(); // username -> ws

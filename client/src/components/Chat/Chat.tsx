@@ -3,7 +3,7 @@ import SendIcon from '@mui/icons-material/Send';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import Message from '../Message/Message';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../Types';
+import { AppDispatch, MessagePayload, RootState } from '../../Types';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { appendMessage, sliceActions } from '../../slices/Slice';
 import VisuallyHiddenInput from '../VisuallyHiddenInput/VisuallyHiddenInput';
@@ -112,14 +112,13 @@ export default function Chat() {
 
         const dataUrl = await fileToDataUrl(file);
 
+        const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+
         const payload = {
             username,
-            timestamp: Date.now(),
-            message: {
-                filename: file.name,
-                data: dataUrl,
-            },
-        };
+            timestamp,
+            message: dataUrl,
+        } as MessagePayload;
 
         ws?.send(JSON.stringify(payload));
 
@@ -127,11 +126,8 @@ export default function Chat() {
             appendMessage({
                 payload: {
                     username,
-                    timestamp: new Date().toLocaleTimeString(),
-                    message: {
-                        filename: file.name,
-                        data: dataUrl,
-                    },
+                    timestamp: new Date(timestamp).toLocaleTimeString(),
+                    message: dataUrl,
                 },
             })
         );
