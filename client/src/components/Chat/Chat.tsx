@@ -157,10 +157,12 @@ export default function Chat() {
                 height: '100%',
                 border: '1px solid',
                 borderColor: 'primary.main',
+                display: 'flex',
+                flexDirection: 'column',
             }}
             className="chat"
         >
-            <Box padding="20px 50px">
+            <Box padding="20px 50px" sx={{ flex: '1 1 auto' }}>
                 {loggedIn ? (
                     <Typography
                         sx={{ textAlign: 'center' }}
@@ -203,7 +205,6 @@ export default function Chat() {
                     padding: '0 30px',
                     width: '100%',
                     height: '54px',
-                    position: 'fixed',
                     bottom: '20px',
                     fontWeight: '800',
                 }}
