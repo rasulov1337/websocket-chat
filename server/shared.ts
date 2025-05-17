@@ -11,7 +11,7 @@ export interface MessageData {
 
 export type ReceivedData = InitData | MessageData;
 
-export const TRANSPORT_LAYER_ADDRESS = 'http://90.156.219.177:8010/send';
+export const TRANSPORT_LAYER_ADDRESS = 'http://90.156.219.177:8011/send';
 
 export const isMessageData = (data: any) => {
     const d = data as MessageData;

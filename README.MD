@@ -11,7 +11,7 @@ docker compose up --build
 ```sh
 cd server
 docker build -t ws-server .  # Build
-docker run -p 8005:8005 -p 8010:8010 ws-server  # Run
+docker run -p 8005:8005 -p 8011:8011 ws-server  # Run
 ```
 
 ### Native

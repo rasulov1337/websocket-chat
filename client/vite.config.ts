@@ -15,7 +15,7 @@ export default defineConfig({
                 rewriteWsOrigin: true,
             },
             '/ws/mars': {
-                target: 'ws://localhost:8010',
+                target: 'ws://localhost:8011',
                 ws: true,
                 rewriteWsOrigin: true,
             },
