@@ -3,15 +3,24 @@ import { sliceActions } from './slices/Slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, MessagePayload } from './Types';
 
-const DB_NAME = 'AppDB';
+let DB_NAME = null as null | 'MarsDB' | 'EarthDB';
+
 const DB_VERSION = 1;
 
 const USER_STORE = 'user';
 const MSG_STORE = 'messages';
 
 function openDatabase(): Promise<IDBDatabase> {
+    if (!DB_NAME) {
+        if (window.MARS) {
+            DB_NAME = 'MarsDB';
+        } else {
+            DB_NAME = 'EarthDB';
+        }
+    }
+
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        const request = indexedDB.open(DB_NAME!, DB_VERSION);
 
         request.onupgradeneeded = () => {
             const db = request.result;
