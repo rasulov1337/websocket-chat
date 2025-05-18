@@ -159,10 +159,11 @@ export default function Chat() {
                 borderColor: 'primary.main',
                 display: 'flex',
                 flexDirection: 'column',
+                overflow: 'hidden',
             }}
             className="chat"
         >
-            <Box padding="20px 50px" sx={{ flex: '1 1 auto' }}>
+            <Box padding="20px 50px" sx={{ flex: '1', overflow: 'scroll' }}>
                 {loggedIn ? (
                     <Typography
                         sx={{ textAlign: 'center' }}
