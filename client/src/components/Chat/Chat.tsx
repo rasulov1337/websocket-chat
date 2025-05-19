@@ -163,7 +163,7 @@ export default function Chat() {
             }}
             className="chat"
         >
-            <Box padding="20px 50px" sx={{ flex: '1', overflow: 'scroll' }}>
+            <Box padding="20px 50px" sx={{ flex: '1', overflow: 'auto' }}>
                 {loggedIn ? (
                     <Typography
                         sx={{ textAlign: 'center' }}
